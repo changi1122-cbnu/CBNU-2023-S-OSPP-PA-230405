@@ -11,10 +11,13 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +66,24 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        /* 처음 실행시 일기 있는지 확인 */
+        FileInputStream inFs;
+        String fileName = Integer.toString(Calendar.getInstance().get(Calendar.YEAR)) + "_"
+                + Integer.toString(Calendar.getInstance().get(Calendar.MONTH) + 1) + "_"
+                + Integer.toString(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) + ".txt";
+
+        try {
+            inFs = openFileInput(fileName);
+            byte[] txt = new byte[500];
+            inFs.read(txt);
+            inFs.close();
+            edtDiary.setText((new String(txt)).trim());
+            btnWrite.setText("수정하기");
+        } catch (IOException e) {
+            edtDiary.setHint("일기 없음");
+            btnWrite.setText("새로 저장");
+        }
     }
 
     String readDiary(String fName) {
